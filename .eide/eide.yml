@@ -1,0 +1,91 @@
+version: "4.1"
+name: bootloader
+type: ARM
+deviceName: null
+packDir: null
+srcDirs:
+  - ../libstm32h743/hal/source
+  - ../libstm32h743/config/Core/Src
+  - source
+virtualFolder:
+  name: <virtual_root>
+  files: []
+  folders: []
+dependenceList: []
+outDir: build
+miscInfo:
+  uid: 5526cc1dba19ee7731ebc21f7a4faf19
+targets:
+  Debug:
+    cppPreprocessAttrs:
+      defineList:
+        - USE_PWR_LDO_SUPPLY
+        - USE_HAL_DRIVER
+        - STM32H743xx
+      incList:
+        - ../libstm32h743/cmsis/device/st/stm32h7/include
+        - ../libstm32h743/cmsis/include
+        - ../libstm32h743/hal/include
+        - ../libstm32h743/config/Core/Inc
+        - include
+      libList: []
+    excludeList:
+      - ../libstm32h743/hal/source/stm32h7xx_hal_msp_template.c
+      - ../libstm32h743/hal/source/stm32h7xx_hal_timebase_rtc_alarm_template.c
+      - ../libstm32h743/hal/source/stm32h7xx_hal_timebase_rtc_wakeup_template.c
+      - ../libstm32h743/hal/source/stm32h7xx_hal_timebase_tim_template.c
+    toolchain: GCC
+    toolchainConfigMap:
+      GCC:
+        archExtensions: ""
+        cpuType: Cortex-M7
+        floatingPointHardware: single
+        options:
+          version: 5
+          afterBuildTasks: []
+          asm-compiler:
+            ASM_FLAGS: ""
+          beforeBuildTasks: []
+          c/cpp-compiler:
+            CXX_FLAGS: ""
+            C_FLAGS: ""
+            language-c: c11
+            language-cpp: c++11
+            one-elf-section-per-data: true
+            one-elf-section-per-function: true
+            optimization: level-debug
+            warnings: all-warnings
+          global:
+            $float-abi-type: hard
+            misc-control: ""
+            not-use-syscalls: true
+            output-debug-info: enable
+            use-newlib-nano: true
+          linker:
+            $outputTaskExcludes:
+              - .bin
+            LD_FLAGS: ""
+            LIB_FLAGS: -lm
+            output-format: elf
+            remove-unused-input-sections: true
+        scatterFilePath: ../script/stm32h743iit6_flash.ld
+        storageLayout:
+          RAM: []
+          ROM: []
+        useCustomScatterFile: true
+    uploadConfigMap:
+      JLink:
+        baseAddr: ""
+        bin: ""
+        cpuInfo:
+          cpuName: "null"
+          vendor: "null"
+        otherCmds: ""
+        proType: 1
+        speed: 8000
+      OpenOCD:
+        baseAddr: "0x08000000"
+        bin: ""
+        interface: cmsis-dap-v1
+        target: stm32h7x_dual_bank
+    uploader: OpenOCD
