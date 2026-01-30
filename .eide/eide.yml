@@ -7,6 +7,7 @@ srcDirs:
   - ../libstm32h743/hal/source
   - ../libstm32h743/config/Core/Src
   - source
+  - ../libc/source
 virtualFolder:
   name: <virtual_root>
   files: []
@@ -28,12 +29,15 @@ targets:
         - ../libstm32h743/hal/include
         - ../libstm32h743/config/Core/Inc
         - include
+        - ../libc/include
       libList: []
     excludeList:
       - ../libstm32h743/hal/source/stm32h7xx_hal_msp_template.c
       - ../libstm32h743/hal/source/stm32h7xx_hal_timebase_rtc_alarm_template.c
       - ../libstm32h743/hal/source/stm32h7xx_hal_timebase_rtc_wakeup_template.c
       - ../libstm32h743/hal/source/stm32h7xx_hal_timebase_tim_template.c
+      - ../libstm32h743/config/Core/Src/sysmem.c
+      - ../libstm32h743/config/Core/Src/syscalls.c
     toolchain: GCC
     toolchainConfigMap:
       GCC:
@@ -43,12 +47,9 @@ targets:
         options:
           version: 5
           afterBuildTasks: []
-          asm-compiler:
-            ASM_FLAGS: ""
+          asm-compiler: {}
           beforeBuildTasks: []
           c/cpp-compiler:
-            CXX_FLAGS: ""
-            C_FLAGS: ""
             language-c: c11
             language-cpp: c++11
             one-elf-section-per-data: true
@@ -57,14 +58,13 @@ targets:
             warnings: all-warnings
           global:
             $float-abi-type: hard
-            misc-control: ""
-            not-use-syscalls: true
+            arm-thumb-mode: thumb
+            misc-control: -nostdlib -ffreestanding -fno-common
             output-debug-info: enable
-            use-newlib-nano: true
           linker:
             $outputTaskExcludes:
               - .bin
-            LD_FLAGS: ""
+            $toolName: auto
             LIB_FLAGS: -lm
             output-format: elf
             remove-unused-input-sections: true
