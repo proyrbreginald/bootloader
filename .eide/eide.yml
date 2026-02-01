@@ -8,6 +8,7 @@ srcDirs:
   - ../libstm32h743/config/Core/Src
   - source
   - ../libc/source
+  - ../source
 virtualFolder:
   name: <virtual_root>
   files: []
@@ -30,6 +31,7 @@ targets:
         - ../libstm32h743/config/Core/Inc
         - include
         - ../libc/include
+        - ../include
       libList: []
     excludeList:
       - ../libstm32h743/hal/source/stm32h7xx_hal_msp_template.c
@@ -50,11 +52,11 @@ targets:
           asm-compiler: {}
           beforeBuildTasks: []
           c/cpp-compiler:
-            language-c: c11
-            language-cpp: c++11
+            language-c: gnu23
+            language-cpp: gnu++23
             one-elf-section-per-data: true
             one-elf-section-per-function: true
-            optimization: level-debug
+            optimization: level-0
             warnings: all-warnings
           global:
             $float-abi-type: hard
