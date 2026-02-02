@@ -1,6 +1,7 @@
 #include "loader.h"
 #include "gpio.h"
 #include "string.h"
+#include "printf.h"
 
 extern const uint32_t memory_bank1_addr;
 extern const uint32_t memory_bank2_addr;
@@ -45,25 +46,22 @@ void loader(void)
         switch (_config.boot_mode)
         {
         case 0:
-            HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
-            HAL_Delay(100);
+            printf("case 0\r\n");
             break;
             
         case 1:
-            HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
-            HAL_Delay(500);
+            printf("case 1\r\n");
             break;
             
         case 2:
-            HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
-            HAL_Delay(1000);
+            printf("case 2\r\n");
             break;
         
         default:
-            HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-            HAL_Delay(1000);
+            printf("default\r\n");
             break;
         }
+        HAL_Delay(1000);
     }
 }
 
