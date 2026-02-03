@@ -79,7 +79,7 @@ loop_fill_bss_zero:
   bcc fill_bss_zero         /* 如果未到达结束地址则继续填充 */
 
   /* 调用应用程序入口点 */
-  bl loader                 /* 调用loader函数 */
+  bl loader_entry           /* 调用loader函数 */
   bx lr                     /* 返回(正常情况下不会执行到这里) */
 .size reset_handler, .-reset_handler
 
