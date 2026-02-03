@@ -1,46 +1,67 @@
 #include "loader.h"
 #include "gpio.h"
-#include "string.h"
 #include "printf.h"
+#include "string.h"
 
-extern const uint32_t memory_bank1_addr;
-extern const uint32_t memory_bank2_addr;
-extern const uint32_t memory_loader_addr;
-extern const uint32_t memory_config_addr;
-extern const uint32_t memory_patch_addr;
-extern const uint32_t memory_app_a_addr;
-extern const uint32_t memory_app_b_addr;
+extern const uint8_t memory_bank1_addr;
+extern const uint8_t memory_loader_addr;
+extern const uint8_t memory_config_addr;
+extern const uint8_t memory_app_a_addr;
+extern const uint8_t memory_bank2_addr;
+extern const uint8_t memory_patch_addr;
+extern const uint8_t memory_app_b_addr;
 
 void loader(void)
 {
+    uint8_t result = 0;
+
     // STM32CubeMX初始化
     main();
+    printf("init finish\r\n");
 
     // 读取配置信息
     config_t _config;
-    memcpy((void *)&_config, (void *)&memory_config_addr, sizeof(config_t));
-    _config.boot_mode = (_config.boot_mode + 1) % 3;
-
-    uint8_t result = config_erase();
+    result = config_read(&_config);
     if (0 != result)
     {
+        printf("config read fail\r\n");
         while (1)
         {
-            HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-            HAL_Delay(100);
-        }
-    }
-
-    result = config_write(&_config);
-    if (0 != result)
-    {
-        while (1)
-        {
-            HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+            LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
             HAL_Delay(500);
         }
     }
+    printf("config read success\r\n");
+    _config.boot_mode = (_config.boot_mode + 1) % 3;
 
+    // 擦除配置信息
+    result = config_erase();
+    if (0 != result)
+    {
+        printf("config erase fail\r\n");
+        while (1)
+        {
+            LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+            HAL_Delay(500);
+        }
+    }
+    printf("config erase success\r\n");
+
+    // 写入新配置信息
+    result = config_write(&_config);
+    if (0 != result)
+    {
+        printf("config write fail\r\n");
+        while (1)
+        {
+            LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+            HAL_Delay(500);
+        }
+    }
+    printf("config write success\r\n");
+
+    // 状态日志打印
+    printf("config test success\r\n");
     while (1)
     {
         switch (_config.boot_mode)
@@ -48,21 +69,31 @@ void loader(void)
         case 0:
             printf("case 0\r\n");
             break;
-            
+
         case 1:
             printf("case 1\r\n");
             break;
-            
+
         case 2:
             printf("case 2\r\n");
             break;
-        
+
         default:
             printf("default\r\n");
             break;
         }
         HAL_Delay(1000);
     }
+}
+
+ITCM uint8_t config_read(config_t *config)
+{
+    if (NULL == config)
+    {
+        return 1;
+    }
+    memcpy((void *)config, (void *)&memory_config_addr, sizeof(config_t));
+    return 0;
 }
 
 ITCM uint8_t config_erase(void)
