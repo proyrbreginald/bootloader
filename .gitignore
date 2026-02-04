@@ -13,3 +13,8 @@
 # eide template
 *.ept
 *.eide-template
+
+/stm32/.mxproject
+/stm32/*.json
+/stm32/*s
+/stm32/*.ld

@@ -74,6 +74,18 @@ extern const uint8_t _retain_flash_addr;
 // 保留段结束地址
 extern const uint8_t _retain_flash_end;
 
+// 栈底起始地址
+extern const uint8_t stack_addr;
+
+// 栈最小大小
+extern const uint8_t stack_size_min;
+
+// 堆起始地址
+extern const uint8_t heap_addr;
+
+// 堆结束地址
+extern const uint8_t heap_end;
+
 // 判断是否4字节对齐
 #define IS_ALIGN_4_BYTES(addr) (((uint32_t)(addr) & 0x03) == 0)
 

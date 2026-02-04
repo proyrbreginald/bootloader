@@ -21,7 +21,7 @@
 
 reset_handler:
   /* 设置初始堆栈指针 */
-  ldr sp, =stack_init_val
+  ldr sp, =stack_addr
 
   /* 退出可能的低功耗模式，切换到正常模式并配置电源供应 */
   bl ExitRun0Mode 
@@ -79,7 +79,7 @@ loop_fill_bss_zero:
   bcc fill_bss_zero         /* 如果未到达结束地址则继续填充 */
 
   /* 调用应用程序入口点 */
-  bl loader_entry           /* 调用loader函数 */
+  bl entry                  /* 进入RTOS启动流程 */
   bx lr                     /* 返回(正常情况下不会执行到这里) */
 .size reset_handler, .-reset_handler
 
@@ -95,7 +95,7 @@ Infinite_Loop:
 .type isr_table, %object
 
 isr_table:
-.word stack_init_val        /* 初始堆栈指针值 */
+.word stack_addr        /* 初始堆栈指针值 */
 .word reset_handler         /* 复位处理程序 */
 
 /* Cortex-M内核中断 */

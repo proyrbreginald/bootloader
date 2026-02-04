@@ -2,17 +2,31 @@
 #include "gpio.h"
 #include "printf.h"
 #include "string.h"
+#include <rtthread.h>
 
 // 测试程序：不调用任何函数，只做地址或者寄存器操作，避免程序触发hardfault
-RETAIN void test_app(void)
+RETAIN void test_task(void *parameter)
 {
-    for (uint32_t times = 0; times < 4u; times++)
+    rt_kprintf("test task start\n");
+    while (1)
     {
-        uint32_t odr = READ_REG(LED_GREEN_GPIO_Port->ODR);
-        WRITE_REG(LED_GREEN_GPIO_Port->BSRR, ((odr & LED_GREEN_Pin) << 16u) | (~odr & LED_GREEN_Pin));
-        for (uint32_t i = 0; i < 48000000u; i++)
-            ;
+    rt_kprintf("test task running\n");
+        LL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);  
+        rt_thread_mdelay(500);
     }
+}
+
+void rt_application_init(void)
+{
+#ifdef RT_USING_COMPONENTS_INIT
+    /* RT-Thread components initialization */
+    rt_components_init();
+#endif /* RT_USING_COMPONENTS_INIT */
+
+    rt_thread_t tid = rt_thread_create("test", test_task, RT_NULL, 512, 1, 0);
+    RT_ASSERT(tid != RT_NULL);
+
+    rt_thread_startup(tid);
 }
 
 // 引导程序入口
@@ -22,109 +36,109 @@ void loader_entry(void)
 
     // STM32CubeMX初始化
     main();
-    printf("init finish\r\n");
+    printf("init finish\n");
 
     // 读取配置信息
     config_t _config;
     result = loader_read_config(&_config);
     if (0 != result)
     {
-        printf("config read fail\r\n");
+        printf("config read fail\n");
         while (1)
         {
             LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
             HAL_Delay(500);
         }
     }
-    printf("config read success\r\n");
+    printf("config read success\n");
     _config.boot_mode = (_config.boot_mode + 1) % 3;
 
     // 擦除配置信息
     result = loader_erase_config();
     if (0 != result)
     {
-        printf("config erase fail\r\n");
+        printf("config erase fail\n");
         while (1)
         {
             LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
             HAL_Delay(500);
         }
     }
-    printf("config erase success\r\n");
+    printf("config erase success\n");
 
     // 写入新配置信息
     result = loader_write_config(&_config);
     if (0 != result)
     {
-        printf("config write fail\r\n");
+        printf("config write fail\n");
         while (1)
         {
             LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
             HAL_Delay(500);
         }
     }
-    printf("config write success\r\n");
-    printf("config test finish\r\n");
+    printf("config write success\n");
+    printf("config test finish\n");
 
     // 擦除app_a
     result = loader_erase_app_sector(0, 0);
     if (0 != result)
     {
-        printf("app_a erase fail\r\n");
+        printf("app_a erase fail\n");
         while (1)
         {
             LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
             HAL_Delay(500);
         }
     }
-    printf("app_a erase success\r\n");
+    printf("app_a erase success\n");
 
     // 擦除app_b
     result = loader_erase_app_sector(1, 0);
     if (0 != result)
     {
-        printf("app_b erase fail\r\n");
+        printf("app_b erase fail\n");
         while (1)
         {
             LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
             HAL_Delay(500);
         }
     }
-    printf("app_b erase success\r\n");
+    printf("app_b erase success\n");
 
     // 写入app_a
     result = loader_write_app(0, (uint32_t *)&_retain_flash_addr, (uint32_t)&_retain_flash_end - (uint32_t)&_retain_flash_addr);
     if (0 != result)
     {
-        printf("app_a write fail\r\n");
+        printf("app_a write fail\n");
         while (1)
         {
             LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
             HAL_Delay(500);
         }
     }
-    printf("app_a write success\r\n");
+    printf("app_a write success\n");
 
     // 写入app_b
     result = loader_write_app(1, (uint32_t *)&_retain_flash_addr, (uint32_t)&_retain_flash_end - (uint32_t)&_retain_flash_addr);
     if (0 != result)
     {
-        printf("app_b write fail\r\n");
+        printf("app_b write fail\n");
         while (1)
         {
             LL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
             HAL_Delay(500);
         }
     }
-    printf("app_b write success\r\n");
+    printf("app_b write success\n");
 
     // 循环跳转至app_a和app_b
     while (1)
     {
-        printf("jump to test_app(0x%p)\r\n", FLASH_USER_ADDR);
+        printf("jump to test_app(0x%p)\n", FLASH_USER_ADDR);
         jump_to_app(FLASH_USER_ADDR);
         HAL_Delay(3000);
-        printf("jump to test_app(0x%p)\r\n", FLASH_OEM_ADDR);
+        printf("jump to test_app(0x%p)\n", FLASH_OEM_ADDR);
         jump_to_app(FLASH_OEM_ADDR);
         HAL_Delay(3000);
     }
@@ -311,7 +325,7 @@ ITCM uint8_t loader_write_app(uint8_t app, const uint32_t *data, uint32_t size)
 {
     if (app > 1 || NULL == data || !IS_ALIGN_4_BYTES(data) || 0 == size)
     {
-        printf("\tapp=%u, data=0x%p, size=%u\r\n", app, data, size);
+        printf("\tapp=%u, data=0x%p, size=%u\n", app, data, size);
         return 1;
     }
 

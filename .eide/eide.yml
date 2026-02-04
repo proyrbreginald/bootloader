@@ -5,10 +5,13 @@ deviceName: null
 packDir: null
 srcDirs:
   - ../libstm32h743/hal/source
-  - ../libstm32h743/config/Core/Src
   - source
   - ../libc/source
   - ../source
+  - ../rtos/libcpu/arm/cortex_m7
+  - ../rtos/source
+  - bsp/source
+  - stm32/Core/Src
 virtualFolder:
   name: <virtual_root>
   files: []
@@ -25,14 +28,17 @@ targets:
         - USE_FULL_LL_DRIVER
         - USE_HAL_DRIVER
         - USE_PWR_LDO_SUPPLY
+        - rt_kprintf=printf
       incList:
         - ../libstm32h743/cmsis/device/st/stm32h7/include
         - ../libstm32h743/cmsis/include
         - ../libstm32h743/hal/include
-        - ../libstm32h743/config/Core/Inc
+        - stm32/Core/Inc
         - include
         - ../libc/include
         - ../include
+        - ../rtos/include
+        - bsp/include
       libList: []
     excludeList:
       - ../libstm32h743/hal/source/stm32h7xx_hal_msp_template.c
