@@ -51,10 +51,10 @@ extern const uint8_t flash_config_addr;
 #ifndef FLASH_CONFIG_ADDR
 #define FLASH_CONFIG_ADDR ((uint32_t)&flash_config_addr)
 #endif // FLASH_CONFIG_ADDR
-extern const uint8_t flash_app_a_addr;
-#ifndef FLASH_APP_A_ADDR
-#define FLASH_APP_A_ADDR ((uint32_t)&flash_app_a_addr)
-#endif // FLASH_APP_A_ADDR
+extern const uint8_t flash_user_addr;
+#ifndef FLASH_USER_ADDR
+#define FLASH_USER_ADDR ((uint32_t)&flash_user_addr)
+#endif // FLASH_USER_ADDR
 extern const uint8_t flash_bank2_addr;
 #ifndef FLASH_BANK2_ADDR
 #define FLASH_BANK2_ADDR ((uint32_t)&flash_bank2_addr)
@@ -63,10 +63,10 @@ extern const uint8_t flash_patch_addr;
 #ifndef FLASH_PATCH_ADDR
 #define FLASH_PATCH_ADDR ((uint32_t)&flash_patch_addr)
 #endif // FLASH_PATCH_ADDR
-extern const uint8_t flash_app_b_addr;
-#ifndef FLASH_APP_B_ADDR
-#define FLASH_APP_B_ADDR ((uint32_t)&flash_app_b_addr)
-#endif // FLASH_APP_B_ADDR
+extern const uint8_t flash_oem_addr;
+#ifndef FLASH_OEM_ADDR
+#define FLASH_OEM_ADDR ((uint32_t)&flash_oem_addr)
+#endif // FLASH_OEM_ADDR
 
 // 保留段起始地址
 extern const uint8_t _retain_flash_addr;

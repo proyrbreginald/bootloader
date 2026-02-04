@@ -121,11 +121,11 @@ void loader_entry(void)
     // 循环跳转至app_a和app_b
     while (1)
     {
-        printf("jump to test_app(0x%p)\r\n", FLASH_APP_A_ADDR);
-        jump_to_app(FLASH_APP_A_ADDR);
+        printf("jump to test_app(0x%p)\r\n", FLASH_USER_ADDR);
+        jump_to_app(FLASH_USER_ADDR);
         HAL_Delay(3000);
-        printf("jump to test_app(0x%p)\r\n", FLASH_APP_B_ADDR);
-        jump_to_app(FLASH_APP_B_ADDR);
+        printf("jump to test_app(0x%p)\r\n", FLASH_OEM_ADDR);
+        jump_to_app(FLASH_OEM_ADDR);
         HAL_Delay(3000);
     }
 }
@@ -198,7 +198,7 @@ ITCM uint8_t loader_erase_app_all(uint8_t app)
         goto exit;
     }
 
-    const uint32_t addr = (0 == app) ? FLASH_APP_A_ADDR : FLASH_APP_B_ADDR;
+    const uint32_t addr = (0 == app) ? FLASH_USER_ADDR : FLASH_OEM_ADDR;
 
     FLASH_EraseInitTypeDef EraseInitStruct = {
         .TypeErase = FLASH_TYPEERASE_SECTORS,
@@ -246,7 +246,7 @@ ITCM uint8_t loader_erase_app_sector(uint8_t app, uint8_t sector)
         goto exit;
     }
 
-    const uint32_t addr = (0 == app) ? FLASH_APP_A_ADDR : FLASH_APP_B_ADDR;
+    const uint32_t addr = (0 == app) ? FLASH_USER_ADDR : FLASH_OEM_ADDR;
 
     FLASH_EraseInitTypeDef EraseInitStruct = {
         .TypeErase = FLASH_TYPEERASE_SECTORS,
@@ -325,7 +325,7 @@ ITCM uint8_t loader_write_app(uint8_t app, const uint32_t *data, uint32_t size)
         goto exit;
     }
 
-    const uint32_t addr = (0 == app) ? FLASH_APP_A_ADDR : FLASH_APP_B_ADDR;
+    const uint32_t addr = (0 == app) ? FLASH_USER_ADDR : FLASH_OEM_ADDR;
 
     // 每次步进32字节
     for (uint32_t i = 0; i < size; i += 32)
