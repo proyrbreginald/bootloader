@@ -10,7 +10,6 @@ RETAIN void test_task(void *parameter)
     rt_kprintf("test task start\n");
     while (1)
     {
-    rt_kprintf("test task running\n");
         LL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);  
         rt_thread_mdelay(500);
     }

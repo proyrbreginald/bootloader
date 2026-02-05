@@ -41,7 +41,17 @@
 #define RT_USING_SMALL_MEM_AS_HEAP
 #define RT_USING_CONSOLE
 // #define RT_USING_DEVICE
-// #include "finsh_config.h"
+#define RT_USING_FINSH
+#ifdef RT_USING_FINSH
+#define FINSH_USING_SYMTAB
+#define FINSH_USING_DESCRIPTION
+#define RT_CONSOLEBUF_SIZE 256
+#define FINSH_THREAD_PRIORITY (RT_THREAD_PRIORITY_MAX - 2)
+#define FINSH_THREAD_STACK_SIZE 2048
+#define FINSH_CMD_SIZE 64
+#define FINSH_USING_HISTORY
+#define FINSH_HISTORY_LINES 8
+#endif // RT_USING_FINSH
 #include "printf.h"
 
 #endif

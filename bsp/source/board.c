@@ -1,5 +1,7 @@
+#include "board.h"
 #include "loader.h"
 #include "main.h"
+#include "uart_fifo.h"
 #include <rthw.h>
 #include <rtthread.h>
 
@@ -45,22 +47,47 @@ void rt_hw_board_init(void)
 #if defined(RT_USING_HEAP)
     rt_system_heap_init(rt_heap_begin_get(), rt_heap_end_get());
 #endif
+
+    // 初始化终端
+    console_init();
 }
 
 #ifdef RT_USING_FINSH
+
+#define CONSOLE_BUF_SIZE 64 /* 定义缓冲区大小 */
+
+/* 静态定义缓冲区内存 */
+static uint8_t _console_buf[CONSOLE_BUF_SIZE];
+
+/* 定义UART FIFO对象实例 */
+static uart_fifo_t console_fifo;
+
+/* 提供一个 API 返回实例指针 (可选，如果你想对外隐藏变量) */
+uart_fifo_t *get_console_fifo_instance(void)
+{
+    return &console_fifo;
+}
+
+/* 初始化函数 */
+void console_init(void)
+{
+    /* 初始化UART FIFO模块 */
+    uart_fifo_init(&console_fifo, _console_buf, CONSOLE_BUF_SIZE, "shell_rx");
+
+    /* 使能USART1的接收缓冲区非空中断 (RXNE) */
+    LL_USART_EnableIT_RXNE_RXFNE(USART1);
+
+    /* 确保USART已使能 */
+    if (!LL_USART_IsEnabled(USART1))
+    {
+        LL_USART_Enable(USART1);
+    }
+}
+
+/* FinSH移植接口 */
 char rt_hw_console_getchar(void)
 {
-    /* Note: the initial value of ch must < 0 */
-    int ch = -1;
-
-    if (__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE) != RESET)
-    {
-        ch = UartHandle.Instance->DR & 0xff;
-    }
-    else
-    {
-        rt_thread_mdelay(10);
-    }
-    return ch;
+    /* ---> 调用封装好的模块读取数据 (会阻塞) <--- */
+    return uart_fifo_read_wait(&console_fifo);
 }
 #endif

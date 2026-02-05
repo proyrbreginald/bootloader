@@ -22,6 +22,8 @@
 #include "stm32h7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <rtthread.h>
+#include "board.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -156,6 +158,37 @@ void DebugMon_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32h7xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+  rt_interrupt_enter(); /* RT-Thread 中断进入 */
+
+  /* 检查 RXNE 标志 (Read Data Register Not Empty) */
+  if (LL_USART_IsActiveFlag_RXNE(USART1) && LL_USART_IsEnabledIT_RXNE(USART1))
+  {
+    /* 读取数据 (LL库读取函数，读取后硬件会自动清除RXNE标志) */
+    uint8_t ch = LL_USART_ReceiveData8(USART1);
+
+    /* ---> 将数据存入FIFO模块 <--- */
+    uart_fifo_input_irq(get_console_fifo_instance(), ch);
+  }
+  
+  /* (可选) 处理 Overrun 错误，防止中断卡死 */
+  if (LL_USART_IsActiveFlag_ORE(USART1))
+  {
+      LL_USART_ClearFlag_ORE(USART1);
+  }
+
+  rt_interrupt_leave(); /* RT-Thread 中断退出 */
+  /* USER CODE END USART1_IRQn 0 */
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  /* USER CODE END USART1_IRQn 1 */
+}
 
 /* USER CODE BEGIN 1 */
 
