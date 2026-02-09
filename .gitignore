@@ -18,3 +18,5 @@
 /stm32/*.json
 /stm32/*s
 /stm32/*.ld
+
+.clangd
