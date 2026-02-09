@@ -8,7 +8,7 @@
 #if defined(RT_USING_HEAP)
 void *rt_heap_begin_get(void)
 {
-    return (void *)&heap_addr;
+    return (void *)&_heap_addr;
 }
 
 void *rt_heap_end_get(void)

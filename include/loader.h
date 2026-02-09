@@ -1,15 +1,10 @@
 #ifndef LOADER_H
 #define LOADER_H
 
+#include "section.h"
 #include "stm32h7xx_hal.h"
 #include "semver.h"
 #include <stdbool.h>
-
-// 函数属性：将代码放在ITCM区域中，从RAM中零等待取指令
-#define ITCM __attribute__((section(".itcm"), noinline))
-
-// 函数属性：保留代码
-#define RETAIN __attribute__((section(".retain"), noinline))
 
 /* loader信息 */
 typedef struct
@@ -81,7 +76,7 @@ extern const uint8_t stack_addr;
 extern const uint8_t stack_size_min;
 
 // 堆起始地址
-extern const uint8_t heap_addr;
+extern const uint8_t _heap_addr;
 
 // 堆结束地址
 extern const uint8_t heap_end;

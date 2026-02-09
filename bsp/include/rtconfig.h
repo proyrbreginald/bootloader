@@ -9,7 +9,7 @@
 #define RT_USING_COMPONENTS_INIT
 #define RT_DEBUG
 #define DBG_LEVEL              DBG_LOG
-#define RT_DEBUG_MEM           1
+#define RT_DEBUG_MEM           0
 #define RT_DEBUG_MEMHEAP       0
 #define RT_DEBUG_MODULE        0
 #define RT_DEBUG_SCHEDULER     0

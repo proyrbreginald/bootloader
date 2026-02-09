@@ -63,7 +63,7 @@ targets:
           beforeBuildTasks:
             - name: build link script
               abortAfterFailed: false
-              command: ${CompilerPrefix}gcc.exe -E -P -x c -DBUILD_BOOTLOADER ${workspaceFolder}\..\script\stm32h743iit6_flash.ld.s -o ${OutDir}\bootloader.ld
+              command: ${CompilerPrefix}gcc.exe -E -P -x c -DBUILD_BOOTLOADER ${workspaceFolder}\..\script\stm32h743iit6_flash.ld -o ${OutDir}\bootloader.ld
               disable: false
               stopBuildAfterFailed: true
           c/cpp-compiler:
